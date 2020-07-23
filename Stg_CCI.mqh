@@ -82,7 +82,7 @@ class Stg_CCI : public Strategy {
     CCIParams cci_params(_params.CCI_Period, _params.CCI_Applied_Price);
     cci_params.SetTf(_tf);
     StgParams sparams(new Trade(_tf, _Symbol), new Indi_CCI(cci_params), NULL, NULL);
-    sparams.logger.SetLevel(_log_level);
+    sparams.logger.Ptr().SetLevel(_log_level);
     sparams.SetMagicNo(_magic_no);
     sparams.SetSignals(_params.CCI_SignalOpenMethod, _params.CCI_SignalOpenLevel, _params.CCI_SignalOpenFilterMethod,
                        _params.CCI_SignalOpenBoostMethod, _params.CCI_SignalCloseMethod, _params.CCI_SignalCloseLevel);
