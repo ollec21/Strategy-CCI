@@ -1,32 +1,25 @@
-//+------------------------------------------------------------------+
-//|                  EA31337 - multi-strategy advanced trading robot |
-//|                       Copyright 2016-2020, 31337 Investments Ltd |
-//|                                       https://github.com/EA31337 |
-//+------------------------------------------------------------------+
-
 /**
  * @file
  * Implements CCI strategy based on the Commodity Channel Index indicator.
  */
 
+// User input params.
+INPUT int CCI_Shift = 1;                         // Shift (0 for default)
+INPUT int CCI_Period = 58;                       // Period
+INPUT ENUM_APPLIED_PRICE CCI_Applied_Price = 2;  // Applied Price
+INPUT int CCI_SignalOpenMethod = 0;              // Signal open method (-63-63)
+INPUT float CCI_SignalOpenLevel = 18;           // Signal open level (-49-49)
+INPUT int CCI_SignalOpenFilterMethod = 0;        // Signal open filter method
+INPUT int CCI_SignalOpenBoostMethod = 0;         // Signal open boost method
+INPUT int CCI_SignalCloseMethod = 0;             // Signal close method (-63-63)
+INPUT float CCI_SignalCloseLevel = 18;          // Signal close level (-49-49)
+INPUT int CCI_PriceLimitMethod = 0;              // Price limit method (0-6)
+INPUT float CCI_PriceLimitLevel = 0;            // Price limit level
+double CCI_MaxSpread = 6.0;                      // Max spread to trade (pips)
+
 // Includes.
 #include <EA31337-classes/Indicators/Indi_CCI.mqh>
 #include <EA31337-classes/Strategy.mqh>
-
-// User input params.
-INPUT string __CCI_Parameters__ = "-- CCI strategy params --";  // >>> CCI <<<
-INPUT int CCI_Shift = 1;                                        // Shift (0 for default)
-INPUT int CCI_Period = 58;                                      // Period
-INPUT ENUM_APPLIED_PRICE CCI_Applied_Price = 2;                 // Applied Price
-INPUT int CCI_SignalOpenMethod = 0;                             // Signal open method (-63-63)
-INPUT double CCI_SignalOpenLevel = 18;                          // Signal open level (-49-49)
-INPUT int CCI_SignalOpenFilterMethod = 0;                       // Signal open filter method
-INPUT int CCI_SignalOpenBoostMethod = 0;                        // Signal open boost method
-INPUT int CCI_SignalCloseMethod = 0;                            // Signal close method (-63-63)
-INPUT double CCI_SignalCloseLevel = 18;                         // Signal close level (-49-49)
-INPUT int CCI_PriceLimitMethod = 0;                             // Price limit method (0-6)
-INPUT double CCI_PriceLimitLevel = 0;                           // Price limit level
-double CCI_MaxSpread = 6.0;                                     // Max spread to trade (pips)
 
 // Struct to define strategy parameters to override.
 struct Stg_CCI_Params : StgParams {
@@ -102,7 +95,7 @@ class Stg_CCI : public Strategy {
    *   _method (int) - signal method to use by using bitwise AND operation
    *   _level (double) - signal level to consider the signal
    */
-  bool SignalOpen(ENUM_ORDER_TYPE _cmd, int _method = 0, double _level = 0.0) {
+  bool SignalOpen(ENUM_ORDER_TYPE _cmd, int _method = 0, float _level = 0.0) {
     Chart *_chart = Chart();
     Indi_CCI *_indi = Data();
     bool _is_valid = _indi[CURR].IsValid() && _indi[PREV].IsValid() && _indi[PPREV].IsValid();
@@ -120,7 +113,8 @@ class Stg_CCI : public Strategy {
           if (METHOD(_method, 1)) _result &= _indi[PREV].value[0] > _indi[PPREV].value[0];
           if (METHOD(_method, 2)) _result &= _indi[PREV].value[0] < -_level;
           if (METHOD(_method, 3)) _result &= _indi[PPREV].value[0] < -_level;
-          if (METHOD(_method, 4)) _result &= _indi[CURR].value[0] - _indi[PREV].value[0] > _indi[PREV].value[0] - _indi[PPREV].value[0];
+          if (METHOD(_method, 4))
+            _result &= _indi[CURR].value[0] - _indi[PREV].value[0] > _indi[PREV].value[0] - _indi[PPREV].value[0];
           if (METHOD(_method, 5)) _result &= _indi[PPREV].value[0] > 0;
         }
         break;
@@ -131,7 +125,8 @@ class Stg_CCI : public Strategy {
           if (METHOD(_method, 1)) _result &= _indi[PREV].value[0] < _indi[PPREV].value[0];
           if (METHOD(_method, 2)) _result &= _indi[PREV].value[0] > _level;
           if (METHOD(_method, 3)) _result &= _indi[PPREV].value[0] > _level;
-          if (METHOD(_method, 4)) _result &= _indi[PREV].value[0] - _indi[CURR].value[0] > _indi[PPREV].value[0] - _indi[PREV].value[0];
+          if (METHOD(_method, 4))
+            _result &= _indi[PREV].value[0] - _indi[CURR].value[0] > _indi[PPREV].value[0] - _indi[PREV].value[0];
           if (METHOD(_method, 5)) _result &= _indi[PPREV].value[0] < 0;
         }
         break;
@@ -140,48 +135,9 @@ class Stg_CCI : public Strategy {
   }
 
   /**
-   * Check strategy's opening signal additional filter.
-   */
-  bool SignalOpenFilter(ENUM_ORDER_TYPE _cmd, int _method = 0) {
-    bool _result = true;
-    if (_method != 0) {
-      // if (METHOD(_method, 0)) _result &= Trade().IsTrend(_cmd);
-      // if (METHOD(_method, 1)) _result &= Trade().IsPivot(_cmd);
-      // if (METHOD(_method, 2)) _result &= Trade().IsPeakHours(_cmd);
-      // if (METHOD(_method, 3)) _result &= Trade().IsRoundNumber(_cmd);
-      // if (METHOD(_method, 4)) _result &= Trade().IsHedging(_cmd);
-      // if (METHOD(_method, 5)) _result &= Trade().IsPeakBar(_cmd);
-    }
-    return _result;
-  }
-
-  /**
-   * Gets strategy's lot size boost (when enabled).
-   */
-  double SignalOpenBoost(ENUM_ORDER_TYPE _cmd, int _method = 0) {
-    bool _result = 1.0;
-    if (_method != 0) {
-      // if (METHOD(_method, 0)) if (Trade().IsTrend(_cmd)) _result *= 1.1;
-      // if (METHOD(_method, 1)) if (Trade().IsPivot(_cmd)) _result *= 1.1;
-      // if (METHOD(_method, 2)) if (Trade().IsPeakHours(_cmd)) _result *= 1.1;
-      // if (METHOD(_method, 3)) if (Trade().IsRoundNumber(_cmd)) _result *= 1.1;
-      // if (METHOD(_method, 4)) if (Trade().IsHedging(_cmd)) _result *= 1.1;
-      // if (METHOD(_method, 5)) if (Trade().IsPeakBar(_cmd)) _result *= 1.1;
-    }
-    return _result;
-  }
-
-  /**
-   * Check strategy's closing signal.
-   */
-  bool SignalClose(ENUM_ORDER_TYPE _cmd, int _method = 0, double _level = 0.0) {
-    return SignalOpen(Order::NegateOrderType(_cmd), _method, _level);
-  }
-
-  /**
    * Gets price limit value for profit take or stop loss.
    */
-  double PriceLimit(ENUM_ORDER_TYPE _cmd, ENUM_ORDER_TYPE_VALUE _mode, int _method = 0, double _level = 0.0) {
+  float PriceLimit(ENUM_ORDER_TYPE _cmd, ENUM_ORDER_TYPE_VALUE _mode, int _method = 0, float _level = 0.0) {
     Indi_CCI *_indi = Data();
     double _trail = _level * Market().GetPipSize();
     int _direction = Order::OrderDirection(_cmd, _mode);
@@ -189,8 +145,9 @@ class Stg_CCI : public Strategy {
     double _result = _default_value;
     switch (_method) {
       case 0: {
-        int _bar_count = (int) _level * (int) _indi.GetPeriod();
-        _result = _direction > 0 ? _indi.GetPrice(PRICE_HIGH, _indi.GetHighest(_bar_count)) : _indi.GetPrice(PRICE_LOW, _indi.GetLowest(_bar_count));
+        int _bar_count = (int)_level * (int)_indi.GetPeriod();
+        _result = _direction > 0 ? _indi.GetPrice(PRICE_HIGH, _indi.GetHighest(_bar_count))
+                                 : _indi.GetPrice(PRICE_LOW, _indi.GetLowest(_bar_count));
         break;
       }
     }
