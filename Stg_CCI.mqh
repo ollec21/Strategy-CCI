@@ -8,14 +8,14 @@ INPUT int CCI_Shift = 1;                         // Shift (0 for default)
 INPUT int CCI_Period = 58;                       // Period
 INPUT ENUM_APPLIED_PRICE CCI_Applied_Price = 2;  // Applied Price
 INPUT int CCI_SignalOpenMethod = 0;              // Signal open method (-63-63)
-INPUT float CCI_SignalOpenLevel = 18;           // Signal open level (-49-49)
+INPUT float CCI_SignalOpenLevel = 18;            // Signal open level (-49-49)
 INPUT int CCI_SignalOpenFilterMethod = 0;        // Signal open filter method
 INPUT int CCI_SignalOpenBoostMethod = 0;         // Signal open boost method
 INPUT int CCI_SignalCloseMethod = 0;             // Signal close method (-63-63)
-INPUT float CCI_SignalCloseLevel = 18;          // Signal close level (-49-49)
+INPUT float CCI_SignalCloseLevel = 18;           // Signal close level (-49-49)
 INPUT int CCI_PriceLimitMethod = 0;              // Price limit method (0-6)
-INPUT float CCI_PriceLimitLevel = 0;            // Price limit level
-double CCI_MaxSpread = 6.0;                      // Max spread to trade (pips)
+INPUT float CCI_PriceLimitLevel = 0;             // Price limit level
+INPUT float CCI_MaxSpread = 6.0;                 // Max spread to trade (pips)
 
 // Includes.
 #include <EA31337-classes/Indicators/Indi_CCI.mqh>
@@ -27,14 +27,14 @@ struct Stg_CCI_Params : StgParams {
   ENUM_APPLIED_PRICE CCI_Applied_Price;
   int CCI_Shift;
   int CCI_SignalOpenMethod;
-  double CCI_SignalOpenLevel;
+  float CCI_SignalOpenLevel;
   int CCI_SignalOpenFilterMethod;
   int CCI_SignalOpenBoostMethod;
   int CCI_SignalCloseMethod;
-  double CCI_SignalCloseLevel;
+  float CCI_SignalCloseLevel;
   int CCI_PriceLimitMethod;
-  double CCI_PriceLimitLevel;
-  double CCI_MaxSpread;
+  float CCI_PriceLimitLevel;
+  float CCI_MaxSpread;
 
   // Constructor: Set default param values.
   Stg_CCI_Params()
@@ -151,6 +151,6 @@ class Stg_CCI : public Strategy {
         break;
       }
     }
-    return _result;
+    return (float)_result;
   }
 };
