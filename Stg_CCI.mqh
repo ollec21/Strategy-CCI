@@ -3,58 +3,66 @@
  * Implements CCI strategy based on the Commodity Channel Index indicator.
  */
 
-// User input params.
-INPUT int CCI_Shift = 1;                         // Shift (0 for default)
-INPUT int CCI_Period = 58;                       // Period
-INPUT ENUM_APPLIED_PRICE CCI_Applied_Price = 2;  // Applied Price
-INPUT int CCI_SignalOpenMethod = 0;              // Signal open method (-63-63)
-INPUT float CCI_SignalOpenLevel = 18;            // Signal open level (-49-49)
-INPUT int CCI_SignalOpenFilterMethod = 0;        // Signal open filter method
-INPUT int CCI_SignalOpenBoostMethod = 0;         // Signal open boost method
-INPUT int CCI_SignalCloseMethod = 0;             // Signal close method (-63-63)
-INPUT float CCI_SignalCloseLevel = 18;           // Signal close level (-49-49)
-INPUT int CCI_PriceLimitMethod = 0;              // Price limit method (0-6)
-INPUT float CCI_PriceLimitLevel = 0;             // Price limit level
-INPUT float CCI_MaxSpread = 6.0;                 // Max spread to trade (pips)
-
 // Includes.
 #include <EA31337-classes/Indicators/Indi_CCI.mqh>
 #include <EA31337-classes/Strategy.mqh>
 
+// User input params.
+INPUT float CCI_LotSize = 0;               // Lot size
+INPUT int CCI_SignalOpenMethod = 0;        // Signal open method (-63-63)
+INPUT float CCI_SignalOpenLevel = 18;      // Signal open level (-49-49)
+INPUT int CCI_SignalOpenFilterMethod = 0;  // Signal open filter method
+INPUT int CCI_SignalOpenBoostMethod = 0;   // Signal open boost method
+INPUT int CCI_SignalCloseMethod = 0;       // Signal close method (-63-63)
+INPUT float CCI_SignalCloseLevel = 18;     // Signal close level (-49-49)
+INPUT int CCI_PriceLimitMethod = 0;        // Price limit method (0-6)
+INPUT float CCI_PriceLimitLevel = 0;       // Price limit level
+INPUT int CCI_TickFilterMethod = 0;        // Tick filter method
+INPUT float CCI_MaxSpread = 6.0;           // Max spread to trade (pips)
+INPUT int CCI_Shift = 1;                   // Shift (0 for default)
+INPUT string __CCI_Indi_CCI_Parameters__ =
+    "-- CCI strategy: CCI indicator params --";       // >>> CCI strategy: CCI indicator <<<
+INPUT int Indi_CCI_Period = 58;                       // Period
+INPUT ENUM_APPLIED_PRICE Indi_CCI_Applied_Price = 2;  // Applied Price
+
+// Structs.
+
+// Defines struct with default user indicator values.
+struct Indi_CCI_Params_Defaults : CCIParams {
+  Indi_CCI_Params_Defaults() : CCIParams(::Indi_CCI_Period, ::Indi_CCI_Applied_Price) {}
+} indi_cci_defaults;
+
+// Defines struct to store indicator parameter values.
+struct Indi_CCI_Params : public CCIParams {
+  // Struct constructors.
+  void Indi_CCI_Params(CCIParams &_params, ENUM_TIMEFRAMES _tf) : CCIParams(_params, _tf) {}
+};
+
+// Defines struct with default user strategy values.
+struct Stg_CCI_Params_Defaults : StgParams {
+  Stg_CCI_Params_Defaults()
+      : StgParams(::CCI_SignalOpenMethod, ::CCI_SignalOpenFilterMethod, ::CCI_SignalOpenLevel,
+                  ::CCI_SignalOpenBoostMethod, ::CCI_SignalCloseMethod, ::CCI_SignalCloseLevel, ::CCI_PriceLimitMethod,
+                  ::CCI_PriceLimitLevel, ::CCI_TickFilterMethod, ::CCI_MaxSpread, ::CCI_Shift) {}
+} stg_cci_defaults;
+
 // Struct to define strategy parameters to override.
 struct Stg_CCI_Params : StgParams {
-  unsigned int CCI_Period;
-  ENUM_APPLIED_PRICE CCI_Applied_Price;
-  int CCI_Shift;
-  int CCI_SignalOpenMethod;
-  float CCI_SignalOpenLevel;
-  int CCI_SignalOpenFilterMethod;
-  int CCI_SignalOpenBoostMethod;
-  int CCI_SignalCloseMethod;
-  float CCI_SignalCloseLevel;
-  int CCI_PriceLimitMethod;
-  float CCI_PriceLimitLevel;
-  float CCI_MaxSpread;
+  Indi_CCI_Params iparams;
+  StgParams sparams;
 
-  // Constructor: Set default param values.
-  Stg_CCI_Params()
-      : CCI_Period(::CCI_Period),
-        CCI_Applied_Price(::CCI_Applied_Price),
-        CCI_Shift(::CCI_Shift),
-        CCI_SignalOpenMethod(::CCI_SignalOpenMethod),
-        CCI_SignalOpenLevel(::CCI_SignalOpenLevel),
-        CCI_SignalOpenFilterMethod(::CCI_SignalOpenFilterMethod),
-        CCI_SignalOpenBoostMethod(::CCI_SignalOpenBoostMethod),
-        CCI_SignalCloseMethod(::CCI_SignalCloseMethod),
-        CCI_SignalCloseLevel(::CCI_SignalCloseLevel),
-        CCI_PriceLimitMethod(::CCI_PriceLimitMethod),
-        CCI_PriceLimitLevel(::CCI_PriceLimitLevel),
-        CCI_MaxSpread(::CCI_MaxSpread) {}
+  // Struct constructors.
+  Stg_CCI_Params(Indi_CCI_Params &_iparams, StgParams &_sparams)
+      : iparams(indi_cci_defaults, _iparams.tf), sparams(stg_cci_defaults) {
+    iparams = _iparams;
+    sparams = _sparams;
+  }
 };
 
 // Loads pair specific param values.
 #include "sets/EURUSD_H1.h"
 #include "sets/EURUSD_H4.h"
+#include "sets/EURUSD_H8.h"
 #include "sets/EURUSD_M1.h"
 #include "sets/EURUSD_M15.h"
 #include "sets/EURUSD_M30.h"
@@ -66,23 +74,24 @@ class Stg_CCI : public Strategy {
 
   static Stg_CCI *Init(ENUM_TIMEFRAMES _tf = NULL, long _magic_no = NULL, ENUM_LOG_LEVEL _log_level = V_INFO) {
     // Initialize strategy initial values.
-    Stg_CCI_Params _params;
+    Indi_CCI_Params _indi_params(indi_cci_defaults, _tf);
+    StgParams _stg_params(stg_cci_defaults);
     if (!Terminal::IsOptimization()) {
-      SetParamsByTf<Stg_CCI_Params>(_params, _tf, stg_cci_m1, stg_cci_m5, stg_cci_m15, stg_cci_m30, stg_cci_h1,
-                                    stg_cci_h4, stg_cci_h4);
+      SetParamsByTf<Indi_CCI_Params>(_indi_params, _tf, indi_cci_m1, indi_cci_m5, indi_cci_m15, indi_cci_m30,
+                                     indi_cci_h1, indi_cci_h4, indi_cci_h8);
+      SetParamsByTf<StgParams>(_stg_params, _tf, stg_cci_m1, stg_cci_m5, stg_cci_m15, stg_cci_m30, stg_cci_h1,
+                               stg_cci_h4, stg_cci_h8);
     }
+    // Initialize indicator.
+    CCIParams cci_params(_indi_params);
+    _stg_params.SetIndicator(new Indi_CCI(_indi_params));
     // Initialize strategy parameters.
-    CCIParams cci_params(_params.CCI_Period, _params.CCI_Applied_Price);
-    cci_params.SetTf(_tf);
-    StgParams sparams(new Trade(_tf, _Symbol), new Indi_CCI(cci_params), NULL, NULL);
-    sparams.logger.Ptr().SetLevel(_log_level);
-    sparams.SetMagicNo(_magic_no);
-    sparams.SetSignals(_params.CCI_SignalOpenMethod, _params.CCI_SignalOpenLevel, _params.CCI_SignalOpenFilterMethod,
-                       _params.CCI_SignalOpenBoostMethod, _params.CCI_SignalCloseMethod, _params.CCI_SignalCloseLevel);
-    sparams.SetPriceLimits(_params.CCI_PriceLimitMethod, _params.CCI_PriceLimitLevel);
-    sparams.SetMaxSpread(_params.CCI_MaxSpread);
+    _stg_params.GetLog().SetLevel(_log_level);
+    _stg_params.SetMagicNo(_magic_no);
+    _stg_params.SetTf(_tf, _Symbol);
     // Initialize strategy instance.
-    Strategy *_strat = new Stg_CCI(sparams, "CCI");
+    Strategy *_strat = new Stg_CCI(_stg_params, "CCI");
+    _stg_params.SetStops(_strat, _strat);
     return _strat;
   }
 

@@ -4,14 +4,14 @@
  */
 
 // Defines indicator's parameter values for the given pair symbol and timeframe.
-struct Indi_CCI_Params_H1 : Indi_CCI_Params {
-  Indi_CCI_Params_H1() : Indi_CCI_Params(indi_cci_defaults, PERIOD_H1) { shift = 0; }
-} indi_cci_h1;
+struct Indi_CCI_Params_H8 : Indi_CCI_Params {
+  Indi_CCI_Params_H8() : Indi_CCI_Params(indi_cci_defaults, PERIOD_H8) { shift = 0; }
+} indi_cci_h8;
 
 // Defines strategy's parameter values for the given pair symbol and timeframe.
-struct Stg_CCI_Params_H1 : StgParams {
+struct Stg_CCI_Params_H8 : StgParams {
   // Struct constructor.
-  Stg_CCI_Params_H1() : StgParams(stg_cci_defaults) {
+  Stg_CCI_Params_H8() : StgParams(stg_cci_defaults) {
     lot_size = 0;
     signal_open_method = 0;
     signal_open_filter = 1;
@@ -24,4 +24,4 @@ struct Stg_CCI_Params_H1 : StgParams {
     tick_filter_method = 1;
     max_spread = 0;
   }
-} stg_cci_h1;
+} stg_cci_h8;
