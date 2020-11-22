@@ -15,8 +15,8 @@ INPUT int CCI_SignalOpenFilterMethod = 0;  // Signal open filter method
 INPUT int CCI_SignalOpenBoostMethod = 0;   // Signal open boost method
 INPUT int CCI_SignalCloseMethod = 0;       // Signal close method (-63-63)
 INPUT float CCI_SignalCloseLevel = 18;     // Signal close level (-49-49)
-INPUT int CCI_PriceLimitMethod = 0;        // Price limit method (0-6)
-INPUT float CCI_PriceLimitLevel = 0;       // Price limit level
+INPUT int CCI_PriceStopMethod = 0;         // Price stop method (0-6)
+INPUT float CCI_PriceStopLevel = 0;        // Price stop level
 INPUT int CCI_TickFilterMethod = 0;        // Tick filter method
 INPUT float CCI_MaxSpread = 6.0;           // Max spread to trade (pips)
 INPUT int CCI_Shift = 1;                   // Shift (0 for default)
@@ -42,8 +42,8 @@ struct Indi_CCI_Params : public CCIParams {
 struct Stg_CCI_Params_Defaults : StgParams {
   Stg_CCI_Params_Defaults()
       : StgParams(::CCI_SignalOpenMethod, ::CCI_SignalOpenFilterMethod, ::CCI_SignalOpenLevel,
-                  ::CCI_SignalOpenBoostMethod, ::CCI_SignalCloseMethod, ::CCI_SignalCloseLevel, ::CCI_PriceLimitMethod,
-                  ::CCI_PriceLimitLevel, ::CCI_TickFilterMethod, ::CCI_MaxSpread, ::CCI_Shift) {}
+                  ::CCI_SignalOpenBoostMethod, ::CCI_SignalCloseMethod, ::CCI_SignalCloseLevel, ::CCI_PriceStopMethod,
+                  ::CCI_PriceStopLevel, ::CCI_TickFilterMethod, ::CCI_MaxSpread, ::CCI_Shift) {}
 } stg_cci_defaults;
 
 // Struct to define strategy parameters to override.
@@ -144,9 +144,9 @@ class Stg_CCI : public Strategy {
   }
 
   /**
-   * Gets price limit value for profit take or stop loss.
+   * Gets price stop value for profit take or stop loss.
    */
-  float PriceLimit(ENUM_ORDER_TYPE _cmd, ENUM_ORDER_TYPE_VALUE _mode, int _method = 0, float _level = 0.0) {
+  float PriceStop(ENUM_ORDER_TYPE _cmd, ENUM_ORDER_TYPE_VALUE _mode, int _method = 0, float _level = 0.0) {
     Indi_CCI *_indi = Data();
     double _trail = _level * Market().GetPipSize();
     int _direction = Order::OrderDirection(_cmd, _mode);
