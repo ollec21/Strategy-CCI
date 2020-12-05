@@ -116,27 +116,25 @@ class Stg_CCI : public Strategy {
     double level = _level * Chart().GetPipSize();
     switch (_cmd) {
       case ORDER_TYPE_BUY:
-        _result = _indi[CURR].value[0] > 0 && _indi[CURR].value[0] < -_level;
+        _result = _indi[CURR][0] > 0 && _indi[CURR][0] < -_level;
         if (_method != 0) {
-          if (METHOD(_method, 0)) _result &= _indi[CURR].value[0] > _indi[PREV].value[0];
-          if (METHOD(_method, 1)) _result &= _indi[PREV].value[0] > _indi[PPREV].value[0];
-          if (METHOD(_method, 2)) _result &= _indi[PREV].value[0] < -_level;
-          if (METHOD(_method, 3)) _result &= _indi[PPREV].value[0] < -_level;
-          if (METHOD(_method, 4))
-            _result &= _indi[CURR].value[0] - _indi[PREV].value[0] > _indi[PREV].value[0] - _indi[PPREV].value[0];
-          if (METHOD(_method, 5)) _result &= _indi[PPREV].value[0] > 0;
+          if (METHOD(_method, 0)) _result &= _indi[CURR][0] > _indi[PREV][0];
+          if (METHOD(_method, 1)) _result &= _indi[PREV][0] > _indi[PPREV][0];
+          if (METHOD(_method, 2)) _result &= _indi[PREV][0] < -_level;
+          if (METHOD(_method, 3)) _result &= _indi[PPREV][0] < -_level;
+          if (METHOD(_method, 4)) _result &= _indi[CURR][0] - _indi[PREV][0] > _indi[PREV][0] - _indi[PPREV][0];
+          if (METHOD(_method, 5)) _result &= _indi[PPREV][0] > 0;
         }
         break;
       case ORDER_TYPE_SELL:
-        _result = _indi[CURR].value[0] > 0 && _indi[CURR].value[0] > _level;
+        _result = _indi[CURR][0] > 0 && _indi[CURR][0] > _level;
         if (_method != 0) {
-          if (METHOD(_method, 0)) _result &= _indi[CURR].value[0] < _indi[PREV].value[0];
-          if (METHOD(_method, 1)) _result &= _indi[PREV].value[0] < _indi[PPREV].value[0];
-          if (METHOD(_method, 2)) _result &= _indi[PREV].value[0] > _level;
-          if (METHOD(_method, 3)) _result &= _indi[PPREV].value[0] > _level;
-          if (METHOD(_method, 4))
-            _result &= _indi[PREV].value[0] - _indi[CURR].value[0] > _indi[PPREV].value[0] - _indi[PREV].value[0];
-          if (METHOD(_method, 5)) _result &= _indi[PPREV].value[0] < 0;
+          if (METHOD(_method, 0)) _result &= _indi[CURR][0] < _indi[PREV][0];
+          if (METHOD(_method, 1)) _result &= _indi[PREV][0] < _indi[PPREV][0];
+          if (METHOD(_method, 2)) _result &= _indi[PREV][0] > _level;
+          if (METHOD(_method, 3)) _result &= _indi[PPREV][0] > _level;
+          if (METHOD(_method, 4)) _result &= _indi[PREV][0] - _indi[CURR][0] > _indi[PPREV][0] - _indi[PREV][0];
+          if (METHOD(_method, 5)) _result &= _indi[PPREV][0] < 0;
         }
         break;
     }
