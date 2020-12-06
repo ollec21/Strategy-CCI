@@ -3,10 +3,6 @@
  * Implements CCI strategy based on the Commodity Channel Index indicator.
  */
 
-// Includes.
-#include <EA31337-classes/Indicators/Indi_CCI.mqh>
-#include <EA31337-classes/Strategy.mqh>
-
 // User input params.
 INPUT float CCI_LotSize = 0;               // Lot size
 INPUT int CCI_SignalOpenMethod = 0;        // Signal open method (-63-63)
