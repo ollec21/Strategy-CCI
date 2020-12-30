@@ -16,6 +16,7 @@ INPUT float CCI_PriceStopLevel = 0;        // Price stop level
 INPUT int CCI_TickFilterMethod = 0;        // Tick filter method
 INPUT float CCI_MaxSpread = 6.0;           // Max spread to trade (pips)
 INPUT int CCI_Shift = 1;                   // Shift (0 for default)
+INPUT int CCI_OrderCloseTime = -10;        // Order close time in mins (>0) or bars (<0)
 INPUT string __CCI_Indi_CCI_Parameters__ =
     "-- CCI strategy: CCI indicator params --";       // >>> CCI strategy: CCI indicator <<<
 INPUT int Indi_CCI_Period = 58;                       // Period
@@ -39,7 +40,7 @@ struct Stg_CCI_Params_Defaults : StgParams {
   Stg_CCI_Params_Defaults()
       : StgParams(::CCI_SignalOpenMethod, ::CCI_SignalOpenFilterMethod, ::CCI_SignalOpenLevel,
                   ::CCI_SignalOpenBoostMethod, ::CCI_SignalCloseMethod, ::CCI_SignalCloseLevel, ::CCI_PriceStopMethod,
-                  ::CCI_PriceStopLevel, ::CCI_TickFilterMethod, ::CCI_MaxSpread, ::CCI_Shift) {}
+                  ::CCI_PriceStopLevel, ::CCI_TickFilterMethod, ::CCI_MaxSpread, ::CCI_Shift, ::CCI_OrderCloseTime) {}
 } stg_cci_defaults;
 
 // Struct to define strategy parameters to override.
