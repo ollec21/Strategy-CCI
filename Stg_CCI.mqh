@@ -18,15 +18,15 @@ INPUT float CCI_MaxSpread = 4.0;           // Max spread to trade (pips)
 INPUT int CCI_Shift = 1;                   // Shift (0 for default)
 INPUT int CCI_OrderCloseTime = -20;        // Order close time in mins (>0) or bars (<0)
 INPUT string __CCI_Indi_CCI_Parameters__ =
-    "-- CCI strategy: CCI indicator params --";       // >>> CCI strategy: CCI indicator <<<
-INPUT int Indi_CCI_Period = 58;                       // Period
-INPUT ENUM_APPLIED_PRICE Indi_CCI_Applied_Price = 2;  // Applied Price
+    "-- CCI strategy: CCI indicator params --";           // >>> CCI strategy: CCI indicator <<<
+INPUT int CCI_Indi_CCI_Period = 58;                       // Period
+INPUT ENUM_APPLIED_PRICE CCI_Indi_CCI_Applied_Price = 2;  // Applied Price
 
 // Structs.
 
 // Defines struct with default user indicator values.
 struct Indi_CCI_Params_Defaults : CCIParams {
-  Indi_CCI_Params_Defaults() : CCIParams(::Indi_CCI_Period, ::Indi_CCI_Applied_Price) {}
+  Indi_CCI_Params_Defaults() : CCIParams(::CCI_Indi_CCI_Period, ::CCI_Indi_CCI_Applied_Price) {}
 } indi_cci_defaults;
 
 // Defines struct to store indicator parameter values.
