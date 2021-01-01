@@ -6,17 +6,17 @@
 // User input params.
 INPUT float CCI_LotSize = 0;               // Lot size
 INPUT int CCI_SignalOpenMethod = 0;        // Signal open method (-63-63)
-INPUT float CCI_SignalOpenLevel = 18;      // Signal open level (-49-49)
-INPUT int CCI_SignalOpenFilterMethod = 0;  // Signal open filter method
+INPUT float CCI_SignalOpenLevel = 18.0;    // Signal open level (-49-49)
+INPUT int CCI_SignalOpenFilterMethod = 1;  // Signal open filter method
 INPUT int CCI_SignalOpenBoostMethod = 0;   // Signal open boost method
 INPUT int CCI_SignalCloseMethod = 0;       // Signal close method (-63-63)
-INPUT float CCI_SignalCloseLevel = 18;     // Signal close level (-49-49)
+INPUT float CCI_SignalCloseLevel = 18.0;   // Signal close level (-49-49)
 INPUT int CCI_PriceStopMethod = 0;         // Price stop method (0-6)
 INPUT float CCI_PriceStopLevel = 0;        // Price stop level
-INPUT int CCI_TickFilterMethod = 0;        // Tick filter method
-INPUT float CCI_MaxSpread = 6.0;           // Max spread to trade (pips)
+INPUT int CCI_TickFilterMethod = 1;        // Tick filter method
+INPUT float CCI_MaxSpread = 4.0;           // Max spread to trade (pips)
 INPUT int CCI_Shift = 1;                   // Shift (0 for default)
-INPUT int CCI_OrderCloseTime = -10;        // Order close time in mins (>0) or bars (<0)
+INPUT int CCI_OrderCloseTime = -20;        // Order close time in mins (>0) or bars (<0)
 INPUT string __CCI_Indi_CCI_Parameters__ =
     "-- CCI strategy: CCI indicator params --";       // >>> CCI strategy: CCI indicator <<<
 INPUT int Indi_CCI_Period = 58;                       // Period
