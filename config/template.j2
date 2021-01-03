@@ -7,7 +7,6 @@
 struct Indi_CCI_Params_{{ Timeframe }} : Indi_CCI_Params {
   Indi_CCI_Params_{{ Timeframe }}() : Indi_CCI_Params(indi_cci_defaults, PERIOD_{{ Timeframe }}) {
     applied_price = (ENUM_APPLIED_PRICE){{ CCI_Indi_CCI_Applied_Price | default(0) }};
-    ma_method = {{ CCI_Indi_CCI_MA_Method | default(0) }};
     period = {{ CCI_Indi_CCI_Period | default(0) }};
     shift = {{ CCI_Shift | default(0) }};
   }
