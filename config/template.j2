@@ -19,10 +19,10 @@ struct Stg_CCI_Params_{{ Timeframe }} : StgParams {
     lot_size = {{ CCI_LotSize | default(0) }};
     signal_open_method = {{ CCI_SignalOpenMethod | default(0) }};
     signal_open_filter = {{ CCI_SignalOpenFilterMethod | default(1) }};
-    signal_open_level = {{ CCI_SignalOpenLevel | default(0) }};
+    signal_open_level = (float){{ CCI_SignalOpenLevel | default(0) }};
     signal_open_boost = {{ CCI_SignalOpenBoostMethod | default(0) }};
     signal_close_method = {{ CCI_SignalCloseMethod | default(0) }};
-    signal_close_level = {{ CCI_SignalCloseLevel | default(0) }};
+    signal_close_level = (float){{ CCI_SignalCloseLevel | default(0) }};
     price_stop_method = {{ CCI_PriceStopMethod | default(0) }};
     price_stop_level = {{ CCI_SignalCloseLevel | default(1) }};
     tick_filter_method = {{ CCI_TickFilterMethod  | default(1) }};

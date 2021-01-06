@@ -6,11 +6,11 @@
 // User input params.
 INPUT float CCI_LotSize = 0;               // Lot size
 INPUT int CCI_SignalOpenMethod = 0;        // Signal open method (-63-63)
-INPUT float CCI_SignalOpenLevel = 18.0;    // Signal open level (-49-49)
+INPUT float CCI_SignalOpenLevel = 50.0;    // Signal open level (-100-100)
 INPUT int CCI_SignalOpenFilterMethod = 1;  // Signal open filter method
 INPUT int CCI_SignalOpenBoostMethod = 0;   // Signal open boost method
 INPUT int CCI_SignalCloseMethod = 0;       // Signal close method (-63-63)
-INPUT float CCI_SignalCloseLevel = 18.0;   // Signal close level (-49-49)
+INPUT float CCI_SignalCloseLevel = 50.0;   // Signal close level (-100-100)
 INPUT int CCI_PriceStopMethod = 0;         // Price stop method (0-6)
 INPUT float CCI_PriceStopLevel = 0;        // Price stop level
 INPUT int CCI_TickFilterMethod = 1;        // Tick filter method
@@ -110,12 +110,12 @@ class Stg_CCI : public Strategy {
       // Returns false when indicator data is not valid.
       return false;
     }
-    double level = _level * Chart().GetPipSize();
     switch (_cmd) {
       case ORDER_TYPE_BUY:
-        _result = _indi[CURR][0] > 0 && _indi[CURR][0] < -_level;
+        _result = _indi[CURR][0] > _level || _indi[CURR][0] < -_level;
+        _result &= _indi.IsIncreasing(3);
         if (_method != 0) {
-          if (METHOD(_method, 0)) _result &= _indi[CURR][0] > _indi[PREV][0];
+          if (METHOD(_method, 0)) _result &= _indi.IsIncreasing(2, 0, 3);
           if (METHOD(_method, 1)) _result &= _indi[PREV][0] > _indi[PPREV][0];
           if (METHOD(_method, 2)) _result &= _indi[PREV][0] < -_level;
           if (METHOD(_method, 3)) _result &= _indi[PPREV][0] < -_level;
@@ -124,9 +124,10 @@ class Stg_CCI : public Strategy {
         }
         break;
       case ORDER_TYPE_SELL:
-        _result = _indi[CURR][0] > 0 && _indi[CURR][0] > _level;
+        _result = _indi[CURR][0] > _level || _indi[CURR][0] < -_level;
+        _result &= _indi.IsDecreasing(3);
         if (_method != 0) {
-          if (METHOD(_method, 0)) _result &= _indi[CURR][0] < _indi[PREV][0];
+          if (METHOD(_method, 0)) _result &= _indi.IsDecreasing(2, 0, 3);
           if (METHOD(_method, 1)) _result &= _indi[PREV][0] < _indi[PPREV][0];
           if (METHOD(_method, 2)) _result &= _indi[PREV][0] > _level;
           if (METHOD(_method, 3)) _result &= _indi[PPREV][0] > _level;
