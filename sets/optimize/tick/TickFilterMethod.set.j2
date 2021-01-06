@@ -1,6 +1,6 @@
 CCI_Indi_CCI_Applied_Price={{ applied_price | replace("(ENUM_APPLIED_PRICE)", "") | int | default(0) }}
 CCI_Indi_CCI_MA_Method={{ ma_method | default(0) }}
-CCI_Indi_CCI_Period={{ period | default(4) }}
+CCI_Indi_CCI_Period={{ (period | default(0) | int) }}
 CCI_Indi_CCI_Shift={{ shift | default(0) }}
 CCI_LotSize={{ lot_size | default(0) }}
 CCI_PriceStopLevel={{ price_stop_level | replace("(float)", "") | float | default(0) }}
