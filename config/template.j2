@@ -24,7 +24,7 @@ struct Stg_CCI_Params_{{ Timeframe }} : StgParams {
     signal_close_method = {{ CCI_SignalCloseMethod | default(0) }};
     signal_close_level = (float){{ CCI_SignalCloseLevel | default(0) }};
     price_stop_method = {{ CCI_PriceStopMethod | default(0) }};
-    price_stop_level = {{ CCI_SignalCloseLevel | default(1) }};
+    price_stop_level = (float){{ CCI_SignalCloseLevel | default(1) }};
     tick_filter_method = {{ CCI_TickFilterMethod  | default(1) }};
     max_spread = {{ CCI_MaxSpread | default(0) }};
   }
