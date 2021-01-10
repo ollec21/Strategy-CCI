@@ -29,12 +29,6 @@ struct Indi_CCI_Params_Defaults : CCIParams {
   Indi_CCI_Params_Defaults() : CCIParams(::CCI_Indi_CCI_Period, ::CCI_Indi_CCI_Applied_Price) {}
 } indi_cci_defaults;
 
-// Defines struct to store indicator parameter values.
-struct Indi_CCI_Params : public CCIParams {
-  // Struct constructors.
-  void Indi_CCI_Params(CCIParams &_params, ENUM_TIMEFRAMES _tf) : CCIParams(_params, _tf) {}
-};
-
 // Defines struct with default user strategy values.
 struct Stg_CCI_Params_Defaults : StgParams {
   Stg_CCI_Params_Defaults()
@@ -45,11 +39,11 @@ struct Stg_CCI_Params_Defaults : StgParams {
 
 // Struct to define strategy parameters to override.
 struct Stg_CCI_Params : StgParams {
-  Indi_CCI_Params iparams;
+  CCIParams iparams;
   StgParams sparams;
 
   // Struct constructors.
-  Stg_CCI_Params(Indi_CCI_Params &_iparams, StgParams &_sparams)
+  Stg_CCI_Params(CCIParams &_iparams, StgParams &_sparams)
       : iparams(indi_cci_defaults, _iparams.tf), sparams(stg_cci_defaults) {
     iparams = _iparams;
     sparams = _sparams;
@@ -71,11 +65,11 @@ class Stg_CCI : public Strategy {
 
   static Stg_CCI *Init(ENUM_TIMEFRAMES _tf = NULL, long _magic_no = NULL, ENUM_LOG_LEVEL _log_level = V_INFO) {
     // Initialize strategy initial values.
-    Indi_CCI_Params _indi_params(indi_cci_defaults, _tf);
+    CCIParams _indi_params(indi_cci_defaults, _tf);
     StgParams _stg_params(stg_cci_defaults);
     if (!Terminal::IsOptimization()) {
-      SetParamsByTf<Indi_CCI_Params>(_indi_params, _tf, indi_cci_m1, indi_cci_m5, indi_cci_m15, indi_cci_m30,
-                                     indi_cci_h1, indi_cci_h4, indi_cci_h8);
+      SetParamsByTf<CCIParams>(_indi_params, _tf, indi_cci_m1, indi_cci_m5, indi_cci_m15, indi_cci_m30, indi_cci_h1,
+                               indi_cci_h4, indi_cci_h8);
       SetParamsByTf<StgParams>(_stg_params, _tf, stg_cci_m1, stg_cci_m5, stg_cci_m15, stg_cci_m30, stg_cci_h1,
                                stg_cci_h4, stg_cci_h8);
     }

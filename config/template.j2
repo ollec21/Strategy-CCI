@@ -4,8 +4,8 @@
  */
 
 // Defines indicator's parameter values for the given pair symbol and timeframe.
-struct Indi_CCI_Params_{{ Timeframe }} : Indi_CCI_Params {
-  Indi_CCI_Params_{{ Timeframe }}() : Indi_CCI_Params(indi_cci_defaults, PERIOD_{{ Timeframe }}) {
+struct Indi_CCI_Params_{{ Timeframe }} : CCIParams {
+  Indi_CCI_Params_{{ Timeframe }}() : CCIParams(indi_cci_defaults, PERIOD_{{ Timeframe }}) {
     applied_price = (ENUM_APPLIED_PRICE){{ CCI_Indi_CCI_Applied_Price | default(0) }};
     period = {{ CCI_Indi_CCI_Period | default(0) }};
     shift = {{ CCI_Shift | default(0) }};

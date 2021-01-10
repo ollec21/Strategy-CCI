@@ -4,8 +4,8 @@
  */
 
 // Defines indicator's parameter values for the given pair symbol and timeframe.
-struct Indi_CCI_Params_M30 : Indi_CCI_Params {
-  Indi_CCI_Params_M30() : Indi_CCI_Params(indi_cci_defaults, PERIOD_M30) {
+struct Indi_CCI_Params_M30 : CCIParams {
+  Indi_CCI_Params_M30() : CCIParams(indi_cci_defaults, PERIOD_M30) {
     applied_price = (ENUM_APPLIED_PRICE)6;
     period = 20;
     shift = 0;
