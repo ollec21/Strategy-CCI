@@ -19,7 +19,7 @@ INPUT int CCI_Shift = 1;                   // Shift (0 for default)
 INPUT int CCI_OrderCloseTime = -20;        // Order close time in mins (>0) or bars (<0)
 INPUT string __CCI_Indi_CCI_Parameters__ =
     "-- CCI strategy: CCI indicator params --";                               // >>> CCI strategy: CCI indicator <<<
-INPUT int CCI_Indi_CCI_Period = 58;                                           // Period
+INPUT int CCI_Indi_CCI_Period = 20;                                           // Period
 INPUT ENUM_APPLIED_PRICE CCI_Indi_CCI_Applied_Price = (ENUM_APPLIED_PRICE)2;  // Applied Price
 
 // Structs.
