@@ -21,6 +21,7 @@ INPUT string __CCI_Indi_CCI_Parameters__ =
     "-- CCI strategy: CCI indicator params --";                               // >>> CCI strategy: CCI indicator <<<
 INPUT int CCI_Indi_CCI_Period = 20;                                           // Period
 INPUT ENUM_APPLIED_PRICE CCI_Indi_CCI_Applied_Price = (ENUM_APPLIED_PRICE)2;  // Applied Price
+INPUT int CCI_Indi_CCI_Shift = 0;                                             // Shift
 
 // Structs.
 
@@ -34,7 +35,8 @@ struct Stg_CCI_Params_Defaults : StgParams {
   Stg_CCI_Params_Defaults()
       : StgParams(::CCI_SignalOpenMethod, ::CCI_SignalOpenFilterMethod, ::CCI_SignalOpenLevel,
                   ::CCI_SignalOpenBoostMethod, ::CCI_SignalCloseMethod, ::CCI_SignalCloseLevel, ::CCI_PriceStopMethod,
-                  ::CCI_PriceStopLevel, ::CCI_TickFilterMethod, ::CCI_MaxSpread, ::CCI_Shift, ::CCI_OrderCloseTime) {}
+                  ::CCI_PriceStopLevel, ::CCI_TickFilterMethod, ::CCI_MaxSpread, ::CCI_Indi_CCI_Shift,
+                  ::CCI_OrderCloseTime) {}
 } stg_cci_defaults;
 
 // Struct to define strategy parameters to override.
