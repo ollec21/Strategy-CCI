@@ -27,7 +27,7 @@ INPUT int CCI_Indi_CCI_Shift = 0;                                             //
 
 // Defines struct with default user indicator values.
 struct Indi_CCI_Params_Defaults : CCIParams {
-  Indi_CCI_Params_Defaults() : CCIParams(::CCI_Indi_CCI_Period, ::CCI_Indi_CCI_Applied_Price) {}
+  Indi_CCI_Params_Defaults() : CCIParams(::CCI_Indi_CCI_Period, ::CCI_Indi_CCI_Applied_Price, ::CCI_Indi_CCI_Shift) {}
 } indi_cci_defaults;
 
 // Defines struct with default user strategy values.
