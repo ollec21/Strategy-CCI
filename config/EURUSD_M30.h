@@ -7,7 +7,7 @@
 struct Indi_CCI_Params_M30 : CCIParams {
   Indi_CCI_Params_M30() : CCIParams(indi_cci_defaults, PERIOD_M30) {
     applied_price = (ENUM_APPLIED_PRICE)1;
-    period = 22;
+    period = 20;
     shift = 0;
   }
 } indi_cci_m30;
