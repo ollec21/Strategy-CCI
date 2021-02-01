@@ -70,12 +70,12 @@ class Stg_CCI : public Strategy {
     // Initialize strategy initial values.
     CCIParams _indi_params(indi_cci_defaults, _tf);
     StgParams _stg_params(stg_cci_defaults);
-    if (!Terminal::IsOptimization()) {
-      SetParamsByTf<CCIParams>(_indi_params, _tf, indi_cci_m1, indi_cci_m5, indi_cci_m15, indi_cci_m30, indi_cci_h1,
-                               indi_cci_h4, indi_cci_h8);
-      SetParamsByTf<StgParams>(_stg_params, _tf, stg_cci_m1, stg_cci_m5, stg_cci_m15, stg_cci_m30, stg_cci_h1,
-                               stg_cci_h4, stg_cci_h8);
-    }
+#ifdef __config__
+    SetParamsByTf<CCIParams>(_indi_params, _tf, indi_cci_m1, indi_cci_m5, indi_cci_m15, indi_cci_m30, indi_cci_h1,
+                             indi_cci_h4, indi_cci_h8);
+    SetParamsByTf<StgParams>(_stg_params, _tf, stg_cci_m1, stg_cci_m5, stg_cci_m15, stg_cci_m30, stg_cci_h1, stg_cci_h4,
+                             stg_cci_h8);
+#endif
     // Initialize indicator.
     CCIParams cci_params(_indi_params);
     _stg_params.SetIndicator(new Indi_CCI(_indi_params));
