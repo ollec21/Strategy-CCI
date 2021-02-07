@@ -4,29 +4,31 @@
  */
 
 // User input params.
-INPUT float CCI_LotSize = 0;               // Lot size
-INPUT int CCI_SignalOpenMethod = 0;        // Signal open method (-63-63)
-INPUT float CCI_SignalOpenLevel = 50.0;    // Signal open level (-100-100)
-INPUT int CCI_SignalOpenFilterMethod = 1;  // Signal open filter method
-INPUT int CCI_SignalOpenBoostMethod = 0;   // Signal open boost method
-INPUT int CCI_SignalCloseMethod = 0;       // Signal close method (-63-63)
-INPUT float CCI_SignalCloseLevel = 50.0;   // Signal close level (-100-100)
-INPUT int CCI_PriceStopMethod = 0;         // Price stop method (0-6)
-INPUT float CCI_PriceStopLevel = 0;        // Price stop level
-INPUT int CCI_TickFilterMethod = 1;        // Tick filter method
-INPUT float CCI_MaxSpread = 4.0;           // Max spread to trade (pips)
-INPUT int CCI_Shift = 1;                   // Shift (0 for default)
-INPUT int CCI_OrderCloseTime = -20;        // Order close time in mins (>0) or bars (<0)
+INPUT string __CCI_Parameters__ = "-- CCI strategy params --";  // >>> CCI <<<
+INPUT float CCI_LotSize = 0;                                    // Lot size
+INPUT int CCI_SignalOpenMethod = 0;                             // Signal open method (-63-63)
+INPUT float CCI_SignalOpenLevel = 50.0;                         // Signal open level (-100-100)
+INPUT int CCI_SignalOpenFilterMethod = 1;                       // Signal open filter method
+INPUT int CCI_SignalOpenBoostMethod = 0;                        // Signal open boost method
+INPUT int CCI_SignalCloseMethod = 0;                            // Signal close method (-63-63)
+INPUT float CCI_SignalCloseLevel = 50.0;                        // Signal close level (-100-100)
+INPUT int CCI_PriceStopMethod = 0;                              // Price stop method (0-6)
+INPUT float CCI_PriceStopLevel = 0;                             // Price stop level
+INPUT int CCI_TickFilterMethod = 1;                             // Tick filter method
+INPUT float CCI_MaxSpread = 4.0;                                // Max spread to trade (pips)
+INPUT int CCI_Shift = 1;                                        // Shift (0 for default)
+INPUT int CCI_OrderCloseTime = -20;                             // Order close time in mins (>0) or bars (<0)
 INPUT string __CCI_Indi_CCI_Parameters__ =
     "-- CCI strategy: CCI indicator params --";                               // >>> CCI strategy: CCI indicator <<<
 INPUT int CCI_Indi_CCI_Period = 20;                                           // Period
 INPUT ENUM_APPLIED_PRICE CCI_Indi_CCI_Applied_Price = (ENUM_APPLIED_PRICE)2;  // Applied Price
+INPUT int CCI_Indi_CCI_Shift = 0;                                             // Shift
 
 // Structs.
 
 // Defines struct with default user indicator values.
 struct Indi_CCI_Params_Defaults : CCIParams {
-  Indi_CCI_Params_Defaults() : CCIParams(::CCI_Indi_CCI_Period, ::CCI_Indi_CCI_Applied_Price) {}
+  Indi_CCI_Params_Defaults() : CCIParams(::CCI_Indi_CCI_Period, ::CCI_Indi_CCI_Applied_Price, ::CCI_Indi_CCI_Shift) {}
 } indi_cci_defaults;
 
 // Defines struct with default user strategy values.
@@ -34,7 +36,8 @@ struct Stg_CCI_Params_Defaults : StgParams {
   Stg_CCI_Params_Defaults()
       : StgParams(::CCI_SignalOpenMethod, ::CCI_SignalOpenFilterMethod, ::CCI_SignalOpenLevel,
                   ::CCI_SignalOpenBoostMethod, ::CCI_SignalCloseMethod, ::CCI_SignalCloseLevel, ::CCI_PriceStopMethod,
-                  ::CCI_PriceStopLevel, ::CCI_TickFilterMethod, ::CCI_MaxSpread, ::CCI_Shift, ::CCI_OrderCloseTime) {}
+                  ::CCI_PriceStopLevel, ::CCI_TickFilterMethod, ::CCI_MaxSpread, ::CCI_Indi_CCI_Shift,
+                  ::CCI_OrderCloseTime) {}
 } stg_cci_defaults;
 
 // Struct to define strategy parameters to override.
@@ -67,12 +70,12 @@ class Stg_CCI : public Strategy {
     // Initialize strategy initial values.
     CCIParams _indi_params(indi_cci_defaults, _tf);
     StgParams _stg_params(stg_cci_defaults);
-    if (!Terminal::IsOptimization()) {
-      SetParamsByTf<CCIParams>(_indi_params, _tf, indi_cci_m1, indi_cci_m5, indi_cci_m15, indi_cci_m30, indi_cci_h1,
-                               indi_cci_h4, indi_cci_h8);
-      SetParamsByTf<StgParams>(_stg_params, _tf, stg_cci_m1, stg_cci_m5, stg_cci_m15, stg_cci_m30, stg_cci_h1,
-                               stg_cci_h4, stg_cci_h8);
-    }
+#ifdef __config__
+    SetParamsByTf<CCIParams>(_indi_params, _tf, indi_cci_m1, indi_cci_m5, indi_cci_m15, indi_cci_m30, indi_cci_h1,
+                             indi_cci_h4, indi_cci_h8);
+    SetParamsByTf<StgParams>(_stg_params, _tf, stg_cci_m1, stg_cci_m5, stg_cci_m15, stg_cci_m30, stg_cci_h1, stg_cci_h4,
+                             stg_cci_h8);
+#endif
     // Initialize indicator.
     CCIParams cci_params(_indi_params);
     _stg_params.SetIndicator(new Indi_CCI(_indi_params));
@@ -82,7 +85,6 @@ class Stg_CCI : public Strategy {
     _stg_params.SetTf(_tf, _Symbol);
     // Initialize strategy instance.
     Strategy *_strat = new Stg_CCI(_stg_params, "CCI");
-    _stg_params.SetStops(_strat, _strat);
     return _strat;
   }
 
